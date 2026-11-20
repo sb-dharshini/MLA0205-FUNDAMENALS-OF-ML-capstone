@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bayesian Networks for Decision-Making Under Uncertainty</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#fff8f0;--card:#ffffff;--ink:#241b3a;--muted:#5d5478;--c1:#7c3aed;--c2:#ec4899;--c3:#f59e0b;--c4:#06b6d4;--c5:#10b981;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150f26;--card:#221a3b;--ink:#f6f1ff;--muted:#b9afd6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#150f26;--card:#221a3b;--ink:#f6f1ff;--muted:#b9afd6;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Poppins',system-ui,sans-serif;line-height:1.6}
+nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:10px 16px;background:var(--card);box-shadow:0 2px 14px #7c3aed22}
+nav a{white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.85rem;font-weight:600;padding:6px 14px;border-radius:99px}
+nav a:hover{background:linear-gradient(90deg,var(--c1),var(--c2));color:#fff}
+.hero{position:relative;overflow:hidden;padding:80px 24px 90px;text-align:center;color:#fff;background:linear-gradient(130deg,#7c3aed,#ec4899 55%,#f59e0b)}
+.blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.28;background:#fff;animation:float 9s ease-in-out infinite}
+.b1{width:260px;height:260px;left:-60px;top:-60px}.b2{width:180px;height:180px;right:8%;bottom:-50px;animation-delay:2s}.b3{width:90px;height:90px;right:20%;top:30px;animation-delay:4s}
+@keyframes float{50%{transform:translateY(22px)}}
+.tag{display:inline-block;background:#ffffff33;padding:6px 16px;border-radius:99px;font-size:.8rem;font-weight:600;letter-spacing:.08em}
+h1{font-size:clamp(1.8rem,5vw,3.4rem);line-height:1.15;margin:18px auto;max-width:900px;font-weight:800}
+.hero p{max-width:640px;margin:0 auto 24px;font-size:1.05rem}
+.team{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px}
+.team span{background:#ffffff26;border:1px solid #ffffff55;padding:8px 16px;border-radius:14px;font-size:.9rem}
+.btn{display:inline-block;margin-top:26px;background:#fff;color:#7c3aed;font-weight:800;text-decoration:none;padding:12px 28px;border-radius:99px;box-shadow:0 8px 24px #0003}
+section{max-width:1040px;margin:0 auto;padding:64px 20px}
+h2{font-size:clamp(1.5rem,3.5vw,2.2rem);margin:0 0 8px;font-weight:800}
+h2 em{font-style:normal;background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:0 0 28px}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 6px 22px #7c3aed1a;border-top:6px solid var(--c);transition:transform .2s}
+.card:hover{transform:translateY(-5px)}
+.card .n{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--c);color:#fff;font-weight:800;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:1.05rem}.card p{margin:0;color:var(--muted);font-size:.93rem}
+.band{background:linear-gradient(120deg,#06b6d4,#7c3aed);color:#fff;max-width:none}
+.band .in{max-width:1040px;margin:0 auto}
+.band .sub{color:#ffffffd0}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.step{flex:1 1 150px;background:#ffffff22;border:1px solid #ffffff55;border-radius:16px;padding:16px;position:relative}
+.step b{display:block;margin-bottom:4px}.step small{opacity:.9}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chips span{background:#fff;color:#7c3aed;font-weight:600;font-size:.85rem;padding:6px 16px;border-radius:99px}
+.mod{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.mod .card ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:.92rem}
+.mod .card li{margin-bottom:6px}
+.demo{background:var(--card);border-radius:24px;padding:28px;box-shadow:0 10px 34px #ec489922;border:2px dashed var(--c2)}
+.row{display:grid;gap:6px;margin-bottom:16px}
+.row label{display:flex;justify-content:space-between;font-weight:600;font-size:.92rem}
+input[type=range]{width:100%;accent-color:var(--c2)}
+.res{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:10px}
+.big{border-radius:18px;padding:18px;color:#fff;text-align:center}
+.big strong{display:block;font-size:2.2rem;font-weight:800}
+.bar{height:14px;border-radius:99px;background:#7c3aed22;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c5),var(--c3),var(--c2));transition:width .4s}
+.row select{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #7c3aed55;background:var(--card);color:var(--ink);font:inherit}
+.run{width:100%;margin-top:4px;padding:14px;border:0;border-radius:14px;background:linear-gradient(90deg,#7c3aed,#ec4899);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.pbar{margin-top:6px;text-align:left}.pbar span{font-weight:600;font-size:.9rem}
+.rec{background:var(--bg);border-radius:14px;padding:14px 18px;margin-top:16px;font-size:.93rem}.rec b{display:block;margin-bottom:2px}
+.concl{background:var(--card);border-radius:20px;padding:10px 26px;box-shadow:0 6px 22px #f59e0b22}
+.concl p{border-left:5px solid var(--c3);padding-left:14px;margin:16px 0}
+.refs{list-style:none;padding:0;display:grid;gap:12px}
+.refs li{background:var(--card);padding:14px 18px;border-radius:14px;border-left:6px solid var(--c);font-size:.92rem}
+footer{text-align:center;padding:50px 20px 60px;color:#fff;background:linear-gradient(130deg,#ec4899,#7c3aed)}
+footer h2{margin:0}
+</style>
+</head>
+<body>
+<nav>
+<a href="#intro">Introduction</a><a href="#problem">Problem</a><a href="#objectives">Objectives</a><a href="#system">System</a><a href="#modules">Modules</a><a href="#demo">Live Demo</a><a href="#conclusion">Conclusion</a><a href="#refs">References</a>
+</nav>
+
+<header class="hero">
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">FUNDAMENTALS OF MACHINE LEARNING · MLA0205</span>
+<h1>Bayesian Networks for Probabilistic Inference and Decision-Making Under Uncertainty</h1>
+<p>A web-based decision support system that updates probabilities as new evidence arrives.</p>
+<div class="team"><span>S Sarah Khan (1965260116)</span><span>S B Dharshini (192465026)</span><span>Faculty: Kanchana A</span></div>
+<a class="btn" href="#demo">Try the demo ↓</a>
+</header>
+
+<section id="intro">
+<h2>💡 <em>Introduction</em></h2>
+<p class="sub">Reasoning about things we are not sure of.</p>
+<div class="grid">
+<div class="card" style="--c:var(--c1)"><div class="n">1</div><h3>Graphical models</h3><p>Bayesian Networks represent relationships between uncertain variables.</p></div>
+<div class="card" style="--c:var(--c2)"><div class="n">2</div><h3>Probability-driven</h3><p>They use probability theory to analyze evidence and estimate possible outcomes.</p></div>
+<div class="card" style="--c:var(--c3)"><div class="n">3</div><h3>Adaptive</h3><p>Predictions are updated when new information becomes available.</p></div>
+<div class="card" style="--c:var(--c4)"><div class="n">4</div><h3>Web-based</h3><p>The website shows probability estimates, risk levels and decision recommendations.</p></div>
+</div>
+</section>
+
+<section id="problem">
+<h2>⚠️ <em>Problem Statement</em></h2>
+<p class="sub">Why a new approach is needed.</p>
+<div class="grid">
+<div class="card" style="--c:var(--c2)"><h3>Incomplete information</h3><p>Decision-making becomes difficult when information is incomplete or uncertain.</p></div>
+<div class="card" style="--c:var(--c3)"><h3>Hidden dependencies</h3><p>Traditional methods may not effectively represent dependencies between multiple factors.</p></div>
+<div class="card" style="--c:var(--c4)"><h3>Need to update</h3><p>A system is needed that can update probabilities based on new evidence.</p></div>
+<div class="card" style="--c:var(--c5)"><h3>Our answer</h3><p>Use Bayesian Networks to estimate outcomes and support informed decisions.</p></div>
+</div>
+</section>
+
+<section id="objectives">
+<h2>🎯 <em>Objectives</em></h2>
+<p class="sub">What the project sets out to do.</p>
+<div class="grid">
+<div class="card" style="--c:var(--c1)"><div class="n">1</div><p>Construct a Bayesian Network representing relationships between uncertain variables.</p></div>
+<div class="card" style="--c:var(--c2)"><div class="n">2</div><p>Calculate prior and conditional probabilities.</p></div>
+<div class="card" style="--c:var(--c3)"><div class="n">3</div><p>Update posterior probabilities when new evidence is provided.</p></div>
+<div class="card" style="--c:var(--c4)"><div class="n">4</div><p>Estimate outcome probabilities and assess risk.</p></div>
+<div class="card" style="--c:var(--c5)"><div class="n">5</div><p>Recommend suitable decisions using expected utility.</p></div>
+<div class="card" style="--c:var(--c1)"><div class="n">6</div><p>Develop an interactive website for probabilistic decision support.</p></div>
+</div>
+</section>
+
+<section class="band" id="system">
+<div class="in">
+<h2>🏗️ System Architecture</h2>
+<p class="sub">From user input to a results dashboard.</p>
+<div class="flow">
+<div class="step"><b>1 · User Input</b><small>Collects relevant variables and evidence.</small></div>
+<div class="step"><b>2 · Data Processing</b><small>Organizes and validates the input.</small></div>
+<div class="step"><b>3 · Bayesian Network</b><small>Nodes and directed edges show dependencies.</small></div>
+<div class="step"><b>4 · Inference</b><small>Calculates posterior probabilities.</small></div>
+<div class="step"><b>5 · Decision Support</b><small>Evaluates possible actions.</small></div>
+<div class="step"><b>6 · Dashboard</b><small>Shows probabilities, risk levels and recommendations.</small></div>
+</div>
+<div class="chips"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Python</span><span>Flask</span></div>
+</div>
+</section>
+
+<section id="modules">
+<h2>🧩 <em>Modules</em></h2>
+<p class="sub">Three building blocks of the proposed system.</p>
+<div class="mod">
+<div class="card" style="--c:var(--c1)"><div class="n">1</div><h3>Bayesian Network Construction</h3><ul><li>Identify the important input variables.</li><li>Define relationships using a directed acyclic graph (DAG).</li><li>Determine priors and conditional probability tables (CPTs).</li><li>Establish the dependency structure.</li><li>Prepare the network for inference.</li></ul></div>
+<div class="card" style="--c:var(--c2)"><div class="n">2</div><h3>Probabilistic Inference</h3><ul><li>Accept evidence and input values from the user.</li><li>Apply Bayesian calculations to update beliefs.</li><li>Calculate posterior probabilities for outcomes.</li><li>Estimate likelihood of favorable and unfavorable events.</li><li>Evaluate performance using metrics and test data.</li></ul></div>
+<div class="card" style="--c:var(--c4)"><div class="n">3</div><h3>Website &amp; Decision Support</h3><ul><li>Build the site with HTML, CSS and JavaScript.</li><li>Implement the inference engine with Python and Flask.</li><li>Let users enter evidence through input forms.</li><li>Show probabilities and risk levels in charts.</li><li>Recommend actions by expected utility, tested on sample cases.</li></ul></div>
+</div>
+</section>
+
+<section id="demo">
+<h2>🎛️ <em>Live Bayes Demo</em></h2>
+<p class="sub">Choose a student's record and run the Bayesian inference to see probabilities, risk and a recommended action. Illustrative weights only, not a validated academic prediction model.</p>
+<div class="demo">
+<div class="row"><label for="att">Attendance Rate</label><select id="att"><option value="" selected disabled>Select attendance rate</option><option value="2">High (≥ 80%)</option><option value="1">Medium (60–79%)</option><option value="0">Low (&lt; 60%)</option></select></div>
+<div class="row"><label for="stu">Study Hours per Day</label><select id="stu"><option value="" selected disabled>Select study hours</option><option value="0">Less than 1 hour</option><option value="1">1–3 hours</option><option value="2">More than 3 hours</option></select></div>
+<div class="row"><label for="mrk">Previous Marks</label><select id="mrk"><option value="" selected disabled>Select previous marks</option><option value="0">Needs improvement (&lt; 50%)</option><option value="1">Average (50–69%)</option><option value="2">Good (≥ 70%)</option></select></div>
+<div class="row"><label for="asg">Assignment Completion</label><select id="asg"><option value="" selected disabled>Select assignment completion</option><option value="2">Always complete</option><option value="1">Usually complete</option><option value="0">Rarely complete</option></select></div>
+<button class="run" id="run" type="button">▶ Run Bayesian Inference</button>
+<div id="msg" class="rec">Select all four options and press Run to see the prediction.</div>
+<div id="out" style="display:none">
+<div class="res">
+<div class="big" style="background:#10b981">Pass<strong id="pp">0%</strong></div>
+<div class="big" style="background:#ef4444">Fail<strong id="pf">0%</strong></div>
+<div class="big" style="background:#3b82f6">Repeat / Support<strong id="ps">0%</strong></div>
+</div>
+<div class="pbar"><span>Pass</span><div class="bar"><i id="bp"></i></div></div>
+<div class="pbar"><span>Fail</span><div class="bar"><i id="bf"></i></div></div>
+<div class="pbar"><span>Support</span><div class="bar"><i id="bs"></i></div></div>
+<div class="res"><div class="big" id="riskbox" style="background:#f59e0b">Risk Assessment<strong id="risk">Moderate Risk</strong></div></div>
+<div class="rec"><b>Recommended Action</b><span id="rec"></span></div>
+</div>
+</div>
+</section>
+
+<section id="conclusion">
+<h2>🏁 <em>Conclusion</em></h2>
+<div class="concl">
+<p>The proposed system provides a structured approach to decision-making under uncertainty.</p>
+<p>Bayesian Networks analyze dependencies and update probabilities based on evidence.</p>
+<p>The website presents outcome probabilities, risk assessments and decision recommendations.</p>
+<p>Future work: learning probabilities from real datasets, improving inference efficiency, and validating the model across different applications.</p>
+</div>
+</section>
+
+<section id="refs">
+<h2>📚 <em>References</em></h2>
+<ul class="refs">
+<li style="--c:var(--c1)">Kyrimi et al. (2021). Research on Bayesian Networks in healthcare. <i>Artificial Intelligence in Medicine.</i></li>
+<li style="--c:var(--c2)">Shen et al. (2022). Research on Bayesian Network-based COVID-19 risk analysis. <i>Expert Systems with Applications.</i></li>
+<li style="--c:var(--c3)">Kwisthout (2023). Research on explaining Bayesian Network inference. <i>International Journal of Approximate Reasoning.</i></li>
+<li style="--c:var(--c4)">Cebesoy et al. (2025). Research on Bayesian Networks and multicriteria decision-making. <i>Annals of Operations Research.</i></li>
+<li style="--c:var(--c5)">Roma et al. (2026). Research on Dynamic Bayesian Networks for accident-management decisions. <i>Reliability Engineering &amp; System Safety.</i></li>
+</ul>
+</section>
+
+<footer><h2>Thank you! 🎉</h2><p>S Sarah Khan · S B Dharshini · Faculty: Kanchana A</p></footer>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+function calc(){
+var ids=['att','stu','mrk','asg'];
+for(var k=0;k<4;k++){if($(ids[k]).value===''){$('msg').style.display='block';$('msg').textContent='Please select all four options first.';$('out').style.display='none';return;}}
+$('msg').style.display='none';$('out').style.display='block';
+var a=[-18,0,12][+$('att').value],s=[-12,0,8][+$('stu').value],m=[-16,0,10][+$('mrk').value],g=[-10,0,6][+$('asg').value];
+var pass=Math.max(5,Math.min(97,68+a+s+m+g));
+var rem=100-pass;
+var sup=Math.max(1,Math.round(rem*(0.28+Math.max(0,68-pass)/300)));
+var fail=rem-sup;
+$('pp').textContent=pass+'.0%';$('pf').textContent=fail+'.0%';$('ps').textContent=sup+'.0%';
+$('bp').style.width=pass+'%';$('bf').style.width=fail+'%';$('bs').style.width=sup+'%';
+var r=pass>=75?['Low Risk','#10b981','Keep up the good work and stay consistent with attendance and assignments.']:pass>=50?['Moderate Risk','#f59e0b','Study consistently, maintain attendance, and complete assignments.']:['High Risk','#ef4444','Seek academic support, increase study time, and improve attendance and assignment completion.'];
+$('risk').textContent=r[0];$('riskbox').style.background=r[1];$('rec').textContent=r[2];
+}
+$('run').addEventListener('click',calc);
+
+})();
+</script>
+</body>
+</html>
